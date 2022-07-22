@@ -17,20 +17,24 @@ def find_shortest_path(n_intersection, shortcuts):
 def find_shortest_path_shortcut_first(n_intersection, shortcuts):
     path_length = [i for i in range(n_intersection)]
     optimal = False
+    modified_paths = [i for i in range(n_intersection)]
     while not optimal:
         optimal = True
-        modified_paths = []
-        for shortcut_from, shortcut_to in enumerate(shortcuts):
-            if path_length[shortcut_from] + 1 < path_length[shortcut_to]:
+        shortcut_modified_paths = []
+        standard_modified_path = []
+        for modified_path in modified_paths:
+            if path_length[modified_path] + 1 < path_length[shortcuts[modified_path]]:
                 optimal = False
-                path_length[shortcut_to] = path_length[shortcut_from] + 1
-                modified_paths.append(shortcut_to)
+                path_length[shortcuts[modified_path]] = path_length[modified_path] + 1
+                shortcut_modified_paths.append(shortcuts[modified_path])
         for intersection_to in range(n_intersection):
-            for intersection_from in modified_paths:
+            for intersection_from in shortcut_modified_paths:
                 length = abs(intersection_to - intersection_from)
                 if path_length[intersection_to] > path_length[intersection_from] + length:
                     optimal = False
                     path_length[intersection_to] = path_length[intersection_from] + length
+                    standard_modified_path.append(intersection_to)
+        modified_paths = standard_modified_path + shortcut_modified_paths
     return path_length
 
 if __name__ == "__main__":
